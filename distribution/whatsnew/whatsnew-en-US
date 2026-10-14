@@ -4,4 +4,6 @@
 • New: VeraCrypt Argon2id volumes, with PIM
 • New: More actions menu on mounted drives
 • New: tablet layout, drives beside the unlock form
+• New: warns when a drive drops while mounted, e.g. underpowered
 • Fixed: screens drawn under the system bars
+• Fixed: clearer advice for ext4 drives not ejected cleanly
