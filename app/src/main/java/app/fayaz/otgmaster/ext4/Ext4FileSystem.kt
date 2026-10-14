@@ -396,8 +396,9 @@ class Ext4FileSystem private constructor(
                 hasMetadataCsum = hasMetadataCsum,
                 readOnlyReason  = when {
                     (featIncompat and INCOMPAT_RECOVER) != 0 ->
-                        "its journal needs recovery — it was not unmounted cleanly. " +
-                            "Check it on a computer (e2fsck) before writing to it."
+                        "it was not unmounted cleanly (unplugged without ejecting, or it lost " +
+                            "power), so its journal needs recovery. Reading is safe. To write to " +
+                            "it again, mount it once on a Linux computer or run e2fsck on it."
                     // Every inode this driver creates uses an extent tree, and it
                     // cannot allocate the indirect block maps ext2/ext3 use instead.
                     // Writing such a volume made files that e2fsck reports as

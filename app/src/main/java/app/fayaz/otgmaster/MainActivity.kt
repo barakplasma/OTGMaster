@@ -298,10 +298,18 @@ class MainActivity : AppCompatActivity() {
                         autoMountAttempted.removeAll { matchesDetached(it) }
                         sessionPlaintextCreds.keys.filter { matchesDetached(it) }.forEach { sessionPlaintextCreds.remove(it) }
                         saveManuallyUnmountedDevices()
-                        // Unmount any mounted drives from this device.
-                        OtgMasterState.mountedDrives
+                        // Unmount any mounted drives from this device. A drive still mounted
+                        // here was pulled without unmounting — or dropped by itself, which on
+                        // bus-powered NVMe/HDD enclosures is usually the phone's port browning
+                        // out under load (issue #50), so say so outside the app too.
+                        val lost = OtgMasterState.mountedDrives
                             .filter { it.sourceDeviceName?.let(matchesDetached) == true }
-                            .forEach { unmountDrive(it) }
+                        lost.forEach { unmountDrive(it) }
+                        if (lost.isNotEmpty()) {
+                            val msg = getString(R.string.drive_lost_while_mounted, lost.joinToString { it.name })
+                            appendLog(msg)
+                            android.widget.Toast.makeText(context, msg, android.widget.Toast.LENGTH_LONG).show()
+                        }
                         // Close and discard any probed-but-not-yet-mounted block handles.
                         val keysToClose = openedDevices.keys.filter { matchesDetached(it) }
                         val toClose = keysToClose.mapNotNull { openedDevices.remove(it) }
