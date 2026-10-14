@@ -5,6 +5,8 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  # Manual runs: a PR opened before Actions was enabled gets no pull_request run.
+  workflow_dispatch:
 
 jobs:
   build-and-test:
